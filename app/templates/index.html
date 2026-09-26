@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MovieManager</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>🎬 MovieManager</h1>
+
+        <p>Sistema de gestión de películas</p>
+
+        <a
+            href="{{ url_for('main.nueva_pelicula') }}"
+            class="btn"
+        >
+            Registrar película
+        </a>
+
+        <h2>Películas registradas</h2>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Director</th>
+                    <th>Género</th>
+                    <th>Año</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <!--
+                Las películas provenientes de PostgreSQL
+                serán mostradas aquí posteriormente.
+                -->
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Registrar película</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Registrar película</h1>
+
+    <form method="POST">
+
+        <label for="titulo">Título</label>
+        <input
+            type="text"
+            id="titulo"
+            name="titulo"
+            required
+        >
+
+        <label for="director">Director</label>
+        <input
+            type="text"
+            id="director"
+            name="director"
+            required
+        >
+
+        <label for="genero">Género</label>
+        <input
+            type="text"
+            id="genero"
+            name="genero"
+            required
+        >
+
+        <label for="anio_estreno">
+            Año de estreno
+        </label>
+
+        <input
+            type="number"
+            id="anio_estreno"
+            name="anio_estreno"
+            required
+        >
+
+        <label for="sinopsis">Sinopsis</label>
+
+        <textarea
+            id="sinopsis"
+            name="sinopsis"
+            rows="5"
+        ></textarea>
+
+        <button type="submit">
+            Guardar película
+        </button>
+
+        <a href="{{ url_for('main.index') }}">
+            Volver
+        </a>
+
+    </form>
+
+</div>
+
+</body>
+</html>
