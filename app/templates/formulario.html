@@ -1,12 +1,19 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Registrar película</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {{ "Editar película" if pelicula else "Registrar película" }}
+    </title>
 
     <link
         rel="stylesheet"
@@ -19,34 +26,86 @@
 
 <div class="container">
 
-    <h1>Registrar película</h1>
+    <h1>
+        {{ "Editar película" if pelicula else "Registrar película" }}
+    </h1>
 
-    <form method="POST">
+    <!-- MENSAJES -->
+    {% with mensajes = get_flashed_messages() %}
+        {% if mensajes %}
+            {% for mensaje in mensajes %}
+                <div class="mensaje">
+                    {{ mensaje }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
-        <label for="titulo">Título</label>
+    <!-- FORMULARIO -->
+    <form
+        method="POST"
+        action="{{
+            url_for(
+                'main.editar_pelicula',
+                pelicula_id=pelicula.id
+            )
+            if pelicula
+            else url_for('main.nueva_pelicula')
+        }}"
+    >
+
+        <!-- TÍTULO -->
+        <label for="titulo">
+            Título
+        </label>
+
         <input
             type="text"
             id="titulo"
             name="titulo"
+            maxlength="150"
+            value="{{ request.form.get(
+                'titulo',
+                pelicula.titulo if pelicula else ''
+            ) }}"
             required
         >
 
-        <label for="director">Director</label>
+        <!-- DIRECTOR -->
+        <label for="director">
+            Director
+        </label>
+
         <input
             type="text"
             id="director"
             name="director"
+            maxlength="100"
+            value="{{ request.form.get(
+                'director',
+                pelicula.director if pelicula else ''
+            ) }}"
             required
         >
 
-        <label for="genero">Género</label>
+        <!-- GÉNERO -->
+        <label for="genero">
+            Género
+        </label>
+
         <input
             type="text"
             id="genero"
             name="genero"
+            maxlength="50"
+            value="{{ request.form.get(
+                'genero',
+                pelicula.genero if pelicula else ''
+            ) }}"
             required
         >
 
+        <!-- AÑO -->
         <label for="anio_estreno">
             Año de estreno
         </label>
@@ -55,24 +114,51 @@
             type="number"
             id="anio_estreno"
             name="anio_estreno"
+            min="1888"
+            max="2200"
+            value="{{ request.form.get(
+                'anio_estreno',
+                pelicula.anio_estreno if pelicula else ''
+            ) }}"
             required
         >
 
-        <label for="sinopsis">Sinopsis</label>
+        <!-- SINOPSIS -->
+        <label for="sinopsis">
+            Sinopsis
+        </label>
 
         <textarea
             id="sinopsis"
             name="sinopsis"
             rows="5"
-        ></textarea>
+        >{{ request.form.get(
+            'sinopsis',
+            (pelicula.sinopsis or '') if pelicula else ''
+        ) }}</textarea>
 
-        <button type="submit">
-            Guardar película
-        </button>
+        <!-- ACCIONES -->
+        <div class="botones-formulario">
 
-        <a href="{{ url_for('main.index') }}">
-            Volver
-        </a>
+            <button
+                type="submit"
+                class="btn btn-guardar"
+            >
+                {{
+                    "Guardar cambios"
+                    if pelicula
+                    else "Registrar película"
+                }}
+            </button>
+
+            <a
+                href="{{ url_for('main.index') }}"
+                class="btn btn-cancelar"
+            >
+                Cancelar
+            </a>
+
+        </div>
 
     </form>
 
