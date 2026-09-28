@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>MovieManager</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🎬 MovieManager</h1>
+
+    <p>Sistema de gestión de películas</p>
+
+    <!-- MENSAJES -->
+    {% with mensajes = get_flashed_messages() %}
+        {% if mensajes %}
+            {% for mensaje in mensajes %}
+                <div class="mensaje">
+                    {{ mensaje }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- REGISTRAR -->
+    <a
+        href="{{ url_for('main.nueva_pelicula') }}"
+        class="btn btn-registrar"
+    >
+        Registrar película
+    </a>
+
+    <h2>Películas registradas</h2>
+
+    <!-- TABLA -->
+    <div class="tabla-contenedor">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Director</th>
+                    <th>Género</th>
+                    <th>Año</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for pelicula in peliculas %}
+
+                <tr>
+
+                    <td>{{ pelicula.id }}</td>
+
+                    <td>{{ pelicula.titulo }}</td>
+
+                    <td>{{ pelicula.director }}</td>
+
+                    <td>{{ pelicula.genero }}</td>
+
+                    <td>{{ pelicula.anio_estreno }}</td>
+
+                    <td>
+
+                        <div class="acciones">
+
+                            <!-- EDITAR -->
+                            <a
+                                href="{{ url_for(
+                                    'main.editar_pelicula',
+                                    pelicula_id=pelicula.id
+                                ) }}"
+                                class="btn btn-editar"
+                            >
+                                Editar
+                            </a>
+
+                            <!-- ELIMINAR -->
+                            <form
+                                action="{{ url_for(
+                                    'main.borrar_pelicula',
+                                    pelicula_id=pelicula.id
+                                ) }}"
+                                method="POST"
+                                class="form-eliminar"
+                                onsubmit="return confirm(
+                                    '¿Estás seguro de eliminar esta película?'
+                                );"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-eliminar"
+                                >
+                                    Eliminar
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="6" class="sin-registros">
+                        No hay películas registradas.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>
