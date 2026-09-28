@@ -1,0 +1,52 @@
+
+services:
+
+  db:
+    image: postgres:16
+
+    environment:
+      POSTGRES_DB: ${DB_NAME:-moviemanager}
+      POSTGRES_USER: ${DB_USER:-moviemanager}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en .env}
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - moviemanager_net
+
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+
+    ports:
+      - "8080:5000"
+
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: ${DB_NAME:-moviemanager}
+      DB_USER: ${DB_USER:-moviemanager}
+      DB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en .env}
+      SECRET_KEY: ${SECRET_KEY:?Define SECRET_KEY en .env}
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    networks:
+      - moviemanager_net
+
+networks:
+  moviemanager_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
