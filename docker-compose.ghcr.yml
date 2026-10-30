@@ -1,0 +1,4 @@
+services:
+  web:
+    image: ${MOVIEMANAGER_IMAGE:?Define MOVIEMANAGER_IMAGE con una etiqueta publicada}
+    build: !reset null

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas — MovieManager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main class="container">
+    <h1>Estadísticas del catálogo</h1>
+    <p>Total de películas: <strong>{{ total }}</strong></p>
+    {% if generos %}
+    <table>
+        <thead><tr><th>Género</th><th>Cantidad</th></tr></thead>
+        <tbody>{% for fila in generos %}
+            <tr><td>{{ fila.genero }}</td><td>{{ fila.cantidad }}</td></tr>
+        {% endfor %}</tbody>
+    </table>
+    {% else %}<p>No hay películas para calcular estadísticas.</p>{% endif %}
+    <a class="btn" href="{{ url_for('main.index') }}">Volver al catálogo</a>
+</main>
+</body>
+</html>
