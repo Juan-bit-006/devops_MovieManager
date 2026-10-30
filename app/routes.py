@@ -4,17 +4,22 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from app.database import listar_peliculas, obtener_pelicula, crear_pelicula, actualizar_pelicula, eliminar_pelicula
 
 
+from app.validators import validar_pelicula
+
+
 main = Blueprint("main", __name__)
 
 # CONSULTAR PELÍCULAS
 @main.route("/")
 def index():
 
-    peliculas = listar_peliculas()
+    busqueda = request.args.get("q", "").strip()
+    peliculas = listar_peliculas(busqueda)
 
     return render_template(
         "index.html",
-        peliculas=peliculas
+        peliculas=peliculas,
+        busqueda=busqueda
     )
 
 
@@ -24,42 +29,13 @@ def nueva_pelicula():
 
     if request.method == "POST":
 
-        titulo = request.form.get("titulo", "").strip()
-        director = request.form.get("director", "").strip()
-        genero = request.form.get("genero", "").strip()
-        anio = request.form.get("anio_estreno", "").strip()
-        sinopsis = request.form.get("sinopsis", "").strip()
-
-        if not titulo or not director or not genero or not anio:
-            flash("Todos los campos obligatorios deben completarse.")
-            return render_template(
-                "formulario.html",
-                pelicula=None
-            ), 400
-
         try:
-            anio = int(anio)
-        except ValueError:
-            flash("El año debe ser un número válido.")
-            return render_template(
-                "formulario.html",
-                pelicula=None
-            ), 400
+            datos = validar_pelicula(request.form)
+        except ValueError as error:
+            flash(str(error))
+            return render_template("formulario.html", pelicula=None), 400
 
-        if not 1888 <= anio <= 2200:
-            flash("El año debe estar entre 1888 y 2200.")
-            return render_template(
-                "formulario.html",
-                pelicula=None
-            ), 400
-
-        crear_pelicula((
-            titulo,
-            director,
-            genero,
-            anio,
-            sinopsis
-        ))
+        crear_pelicula(datos)
 
         flash("Película registrada correctamente.")
 
@@ -85,45 +61,13 @@ def editar_pelicula(pelicula_id):
 
     if request.method == "POST":
 
-        titulo = request.form.get("titulo", "").strip()
-        director = request.form.get("director", "").strip()
-        genero = request.form.get("genero", "").strip()
-        anio = request.form.get("anio_estreno", "").strip()
-        sinopsis = request.form.get("sinopsis", "").strip()
-
-        if not titulo or not director or not genero or not anio:
-            flash("Todos los campos obligatorios deben completarse.")
-            return render_template(
-                "formulario.html",
-                pelicula=pelicula
-            ), 400
-
         try:
-            anio = int(anio)
-        except ValueError:
-            flash("El año debe ser un número válido.")
-            return render_template(
-                "formulario.html",
-                pelicula=pelicula
-            ), 400
+            datos = validar_pelicula(request.form)
+        except ValueError as error:
+            flash(str(error))
+            return render_template("formulario.html", pelicula=pelicula), 400
 
-        if not 1888 <= anio <= 2200:
-            flash("El año debe estar entre 1888 y 2200.")
-            return render_template(
-                "formulario.html",
-                pelicula=pelicula
-            ), 400
-
-        actualizado = actualizar_pelicula(
-            pelicula_id,
-            (
-                titulo,
-                director,
-                genero,
-                anio,
-                sinopsis
-            )
-        )
+        actualizado = actualizar_pelicula(pelicula_id, datos)
 
         if not actualizado:
             abort(404)
