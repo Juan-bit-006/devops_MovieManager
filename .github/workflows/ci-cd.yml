@@ -1,9 +1,9 @@
 name: MovieManager CI-CD
 on:
   pull_request:
-    branches: [main]
+    branches: [prod]
   push:
-    branches: [main]
+    branches: [prod]
   workflow_dispatch:
 permissions:
   contents: read
@@ -49,7 +49,7 @@ jobs:
   publish:
     name: Construir y publicar en GHCR
     needs: tests
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/prod'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -74,7 +74,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          target: runtime
           push: true
           tags: |
             ${{ steps.image.outputs.name }}:latest
