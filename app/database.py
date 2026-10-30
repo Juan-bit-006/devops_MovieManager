@@ -50,11 +50,15 @@ def init_db():
         """)
 
 
-def listar_peliculas():
+def listar_peliculas(busqueda=""):
     with db_cursor() as cursor:
-        cursor.execute(
-            "SELECT * FROM peliculas ORDER BY id DESC"
-        )
+        # Busca texto literal: % y _ no se interpretan como comodines.
+        cursor.execute("""
+            SELECT * FROM peliculas
+            WHERE strpos(lower(titulo), lower(%s)) > 0
+               OR strpos(lower(director), lower(%s)) > 0
+            ORDER BY id DESC
+        """, (busqueda.strip(), busqueda.strip()))
         return cursor.fetchall()
 
 
