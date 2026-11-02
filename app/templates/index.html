@@ -45,6 +45,13 @@
         Registrar película
     </a>
 
+    <p><a href="{{ url_for('statistics.resumen') }}">Ver estadísticas del catálogo</a></p>
+    <form method="GET" action="{{ url_for('main.index') }}">
+        <label for="q">Buscar por título o director</label>
+        <input type="search" id="q" name="q" value="{{ busqueda }}">
+        <button type="submit" class="btn">Buscar</button>
+        <a href="{{ url_for('main.index') }}">Limpiar búsqueda</a>
+    </form>
     <h2>Películas registradas</h2>
 
     <!-- TABLA -->
@@ -126,7 +133,8 @@
 
                 <tr>
                     <td colspan="6" class="sin-registros">
-                        No hay películas registradas.
+                        {% if busqueda %}No se encontraron resultados para la búsqueda.
+                        {% else %}No hay películas registradas.{% endif %}
                     </td>
                 </tr>
 
