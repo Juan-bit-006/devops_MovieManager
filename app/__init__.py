@@ -19,5 +19,7 @@ def create_app(config=None):
     # Registrar rutas
     from app.routes import main
     app.register_blueprint(main)
+    from app.statistics import statistics
+    app.register_blueprint(statistics)
 
     return app
